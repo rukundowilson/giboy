@@ -12,6 +12,10 @@ interface CategoryProps {
   link: string;
 }
 
+interface imagesStore {
+  pic2: "images/new-born.jpeg"
+}
+
 const Category: React.FC<CategoryProps> = ({ title, image, link }) => {
   return (
     <div className={styles.categoryCard}>
@@ -25,9 +29,9 @@ const Category: React.FC<CategoryProps> = ({ title, image, link }) => {
         />
       </div>
       <h3>{title}</h3>
-      {/* <Link href={link}>
-        <a className={styles.categoryLink}>Shop Now</a>
-      </Link> */}
+      <Link href={link} className={styles.categoryLink}>
+         Shop Now
+      </Link>
     </div>
   );
 };
@@ -69,20 +73,20 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, discount }) =
   );
 };
 
-export default function Home() {
+export default function MainPage(){
   const [email, setEmail] = useState('');
 
   const categories = [
-    { title: 'Newborn Essentials', image: '/images/newborn.jpg', link: '/category/newborn' },
-    { title: 'Toddler Fashion', image: '/images/toddler.jpg', link: '/category/toddler' },
-    { title: 'Baby Accessories', image: '/images/accessories.jpg', link: '/category/accessories' },
+    { title: 'Newborn Essentials', image: '/images/new-born.jpeg', link: '/category/newborn' },
+    { title: 'Toddler Fashion', image: '/images/toddler.jpeg', link: '/category/toddler' },
+    { title: 'Baby Accessories', image: '/images/accessories.jpeg', link: '/category/accessories' },
   ];
 
   const featuredProducts = [
-    { id: 1, name: 'Organic Cotton Onesie', price: 24.99, image: '/images/onesie.jpg', discount: 15 },
-    { id: 2, name: 'Soft Baby Blanket', price: 29.99, image: '/images/blanket.jpg' },
-    { id: 3, name: 'Cute Animal Socks Set', price: 12.99, image: '/images/socks.jpg', discount: 10 },
-    { id: 4, name: 'Baby Beanie Hat', price: 14.99, image: '/images/beanie.jpg' },
+    { id: 1, name: 'Organic Cotton Onesie', price: 24.99, image: '/images/onesie.jpeg', discount: 15 },
+    { id: 2, name: 'Soft Baby Blanket', price: 29.99, image: '/images/blanket.jpeg' },
+    { id: 3, name: 'Cute Animal Socks Set', price: 12.99, image: '/images/socks.jpeg', discount: 10 },
+    { id: 4, name: 'Baby Beanie Hat', price: 14.99, image: '/images/beanie.jpeg' },
   ];
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -95,7 +99,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>TinyThreads | Adorable Baby Clothing</title>
+        <title>Giboy | Adorable Baby Clothing</title>
         <meta name="description" content="Premium quality baby clothes and accessories" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -103,7 +107,7 @@ export default function Home() {
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.logo}>
-            TinyThreads
+            Giboy
           </div>
           <nav className={styles.navigation}>
             <ul>
@@ -148,8 +152,8 @@ export default function Home() {
           </div>
           <div className={styles.heroImageContainer}>
             <Image 
-              src="/images/hero-baby.jpg" 
-              alt="Happy baby in TinyThreads clothes" 
+              src="/images/pic1.jpeg"
+              alt="Happy baby with giboy easy order"
               width={600} 
               height={400} 
               className={styles.heroImage}
@@ -209,7 +213,7 @@ export default function Home() {
           <div className={styles.testimonialGrid}>
             <div className={styles.testimonialCard}>
               <div className={styles.testimonialContent}>
-                "The quality of TinyThreads clothes is amazing! My baby's skin is very sensitive, and these are the only clothes that don't cause irritation."
+                "The quality of Giboy clothes is amazing! My baby's skin is very sensitive, and these are the only clothes that don't cause irritation."
               </div>
               <div className={styles.testimonialAuthor}>- Sarah M., Mother of twins</div>
             </div>
@@ -221,7 +225,7 @@ export default function Home() {
             </div>
             <div className={styles.testimonialCard}>
               <div className={styles.testimonialContent}>
-                "The designs are so cute and unique. I always get compliments on my daughter's outfits from TinyThreads."
+                "The designs are so cute and unique. I always get compliments on my daughter's outfits from Giboy."
               </div>
               <div className={styles.testimonialAuthor}>- Emma L., Mother of a 1-year-old</div>
             </div>
@@ -248,7 +252,7 @@ export default function Home() {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.footerColumn}>
-            <h3>TinyThreads</h3>
+            <h3>Giboy</h3>
             <p>Premium quality baby clothes made with love and care for your little ones.</p>
           </div>
           <div className={styles.footerColumn}>
@@ -281,7 +285,7 @@ export default function Home() {
           </div>
         </div>
         <div className={styles.copyright}>
-          © {new Date().getFullYear()} TinyThreads. All rights reserved.
+          © {new Date().getFullYear()} Giboy. All rights reserved.
         </div>
       </footer>
     </div>

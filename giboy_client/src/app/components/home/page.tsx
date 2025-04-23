@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import styles from './page.module.css'; 
-
+import Login from '@/app/login/page';
+import { useRouter } from 'next/navigation';
 interface CategoryProps {
   title: string;
   image: string;
@@ -15,8 +16,8 @@ interface CategoryProps {
 interface imagesStore {
   pic2: "images/new-born.jpeg"
 }
-
 const Category: React.FC<CategoryProps> = ({ title, image, link }) => {
+  
   return (
     <div className={styles.categoryCard}>
       <div className={styles.categoryImageContainer}>
@@ -75,7 +76,12 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, discount }) =
 
 export default function MainPage(){
   const [email, setEmail] = useState('');
+  const router = useRouter();
 
+  const goTo = function(){
+    router.push('/login')
+  }
+   
   const categories = [
     { title: 'Newborn Essentials', image: '/images/new-born.jpeg', link: '/category/newborn' },
     { title: 'Toddler Fashion', image: '/images/toddler.jpeg', link: '/category/toddler' },
@@ -123,7 +129,9 @@ export default function MainPage(){
               <span className={styles.srOnly}>Search</span>
               🔍
             </button>
-            <button className={styles.headerActionButton}>
+            <button onClick={goTo
+            
+            } className={styles.headerActionButton}>
               <span className={styles.srOnly}>Account</span>
               👤
             </button>

@@ -1,0 +1,266 @@
+/* styles/Auth.module.css */
+.authContainer {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .authCard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 48px;
+    max-width: 500px;
+  }
+  
+  .logoContainer {
+    margin-bottom: 48px;
+  }
+  
+  .authTitle {
+    font-size: 28px;
+    font-weight: 700;
+    color: #b3afaf;
+    margin-bottom: 12px;
+  }
+  
+  .authSubtitle {
+    font-size: 16px;
+    color: #979797;
+    margin-bottom: 32px;
+  }
+  
+  .authForm {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .formLabel {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ccc9c9;
+  }
+  
+  .formInput {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  .formInput:focus {
+    border-color: #ff6b6b;
+    outline: none;
+  }
+  
+  .formOptions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+  
+  .rememberMe {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #ff6b6b;
+  }
+  
+  .forgotPassword {
+    color: #ff6b6b;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .forgotPassword:hover {
+    color: #ff5252;
+    text-decoration: underline;
+  }
+  
+  .authButton {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .authButton:hover {
+    background-color: #ff5252;
+  }
+  
+  .authButton.loading {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+  
+  .divider {
+    position: relative;
+    margin: 32px 0;
+    text-align: center;
+  }
+  
+  .divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #ddd;
+  }
+  
+  .divider span {
+    position: relative;
+    background-color: white;
+    padding: 0 16px;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .socialLogin {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .socialButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .googleButton {
+    background-color: white;
+    border: 1px solid #ddd;
+    color: #333;
+  }
+  
+  .googleButton:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .facebookButton {
+    background-color: #1877f2;
+    border: none;
+    color: white;
+  }
+  
+  .facebookButton:hover {
+    background-color: #166fe5;
+  }
+  
+  .switchAuth {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 14px;
+    color: #929191;
+  }
+  
+  .authLink {
+    color: #ff6b6b;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .authLink:hover {
+    color: #ff5252;
+    text-decoration: underline;
+  }
+  
+  .authImageContainer {
+    flex: 1;
+    position: relative;
+    display: none;
+  }
+  
+  .authImage {
+    object-fit: cover;
+  }
+  
+  .authImageOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+  }
+  
+  .authImageContent {
+    color: white;
+    text-align: center;
+  }
+  
+  .authImageContent h2 {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    font-weight: bold;
+  }
+  
+  .authImageContent p {
+    font-size: 18px;
+    max-width: 500px;
+  }
+  .logo{
+    border-radius: 50%;
+  }
+  
+  .errorMessage {
+    background-color: #fff2f2;
+    border: 1px solid #ffcfcf;
+    color: #e53e3e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  
+  /* Responsive styles */
+  @media (min-width: 768px) {
+    .authImageContainer {
+      display: block;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .authCard {
+      max-width: 100%;
+      padding: 24px;
+    }
+    
+    .logoContainer {
+      margin-bottom: 32px;
+    }
+  }

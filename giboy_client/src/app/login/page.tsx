@@ -131,7 +131,7 @@ const Login: React.FC = () => {
         </div>        
         <p className={styles.switchAuth}>
           Don't have an account?{' '}
-          <Link href="/register" className={styles.authLink}>
+          <Link href="/signup" className={styles.authLink}>
             Sign up
           </Link>
         </p>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import styles from "./page.module.css"
+import API from '../utils/axios';
 
 interface SignupFormData {
   firstName: string;
@@ -66,6 +67,7 @@ const Signup: React.FC = () => {
       if (passwordStrength < 3) {
         throw new Error('Please use a stronger password');
       }
+      await API.post("/api/register",formData);
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
       

@@ -7,7 +7,7 @@ const userController = require('../controllers/userController');
 
 router.get('/', homeController.home);
 router.post('/api/register', userController.registerUser)
-router.post('/login', userController.loginUser);
+router.post('/api/login', userController.loginUser);
 
 
 

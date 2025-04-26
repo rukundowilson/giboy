@@ -3,10 +3,19 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState,useEffect, use } from 'react';
 import styles from './page.module.css'; 
 import Login from '@/app/login/page';
 import { useRouter } from 'next/navigation';
+import Toast from '../components/toast';
+import { isUserLoggedIn } from "@/app/utils/session";
+
+if (isUserLoggedIn()) {
+  console.log("User is logged in ✅");
+} else {
+  console.log("User is NOT logged in ❌");
+}
+
 interface CategoryProps {
   title: string;
   image: string;
@@ -74,10 +83,24 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, discount }) =
   );
 };
 
+interface User{
+  email : string
+}
+
 export default function MainPage(){
   const [email, setEmail] = useState('');
   const router = useRouter();
+  const [user,setUser] = useState<User>({ email: '' })
+  
 
+  useEffect(() => {
+      if (!isUserLoggedIn){
+        router.push('/login')
+      }
+      const userData = localStorage?.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : { email: '' };
+      setUser(userData);
+    }, []);
+  
   const goTo = function(){
     router.push('/login')
   }
@@ -133,7 +156,9 @@ export default function MainPage(){
             
             } className={styles.headerActionButton}>
               <span className={styles.srOnly}>Account</span>
-              👤
+              👤{Object.keys(user).length>0 &&(
+                user?.email
+              )}
             </button>
             <button className={styles.headerActionButton}>
               <span className={styles.srOnly}>Cart</span>
@@ -141,6 +166,9 @@ export default function MainPage(){
             </button>
           </div>
         </div>
+        {isUserLoggedIn()&&(
+           <Toast message = {"you logged in"} />
+        )}
       </header>
 
       <main>

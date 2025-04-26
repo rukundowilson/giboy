@@ -68,6 +68,7 @@ const Signup: React.FC = () => {
         throw new Error('Please use a stronger password');
       } 
       await API.post("/api/register",formData);
+      }
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
       

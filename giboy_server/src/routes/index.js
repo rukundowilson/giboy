@@ -11,4 +11,7 @@ router.post('/api/login', userController.loginUser);
 
 
 
+// Home route
+router.get('/', homeController.home);
+
 module.exports = router;

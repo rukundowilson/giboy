@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
+import API from '../utils/axios';
 
 interface LoginFormData {
   email: string;
@@ -39,19 +40,33 @@ const Login: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       if (formData.email && formData.password) {
-        router.push('/');
+        try {
+          const response = await API.post("/api/login", {
+            email: formData.email,
+            password: formData.password,
+          });
+      
+          const user = response.data.user;
+          // If you add token later: const token = response.data.token;
+      
+          // Store in localStorage
+          localStorage.setItem("user", JSON.stringify(user));
+          // localStorage.setItem("token", token); // if you use JWT
+      
+          router.push('/');
+        } catch (error: any) {
+          console.error("Login error:", error);
+          setError(error.response?.data?.message || 'Login failed');
+        }
       } else {
-        throw new Error('Please enter both email and password');
+        setError('Please enter both email and password');
       }
+       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    console.log(`Logging in with ${provider}`);
   };
 
   return (
@@ -131,7 +146,7 @@ const Login: React.FC = () => {
         </div>        
         <p className={styles.switchAuth}>
           Don't have an account?{' '}
-          <Link href="/register" className={styles.authLink}>
+          <Link href="/signup" className={styles.authLink}>
             Sign up
           </Link>
         </p>

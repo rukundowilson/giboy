@@ -1,11 +1,10 @@
-import { db } from "../config/database"; 
-import multer from "multer";
-import path from "path";
+const db = require('../config/db');
+const multer = require('multer');
+const path = require('path');
 
-// Configure Multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // you must create this folder
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -13,28 +12,46 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({ storage: storage });
+exports.upload = multer({ storage: storage });
 
-// Controller to add new item
-export const addItem = (req, res) => {
-  const { name, description, price } = req.body;
-  const image = req.file ? req.file.filename : null; // multer will add file info
+exports.addItem = (req, res) => {
+  const { name, description, price, size, category, inStock } = req.body;
+  const image = req.file ? req.file.filename : null;
 
   if (!name || !price || !image) {
     return res.status(400).json({ message: "Name, price, and image are required." });
   }
 
   const sql = `
-    INSERT INTO items (name, description, price, image_url)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO items (name, description, price, image_url, size, category, in_stock)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(sql, [name, description, price, image], (err, result) => {
+  db.query(sql, [name, description, price, image, size, category, inStock], (err, result) => {
     if (err) {
       console.error("Error inserting item:", err);
       return res.status(500).json({ message: "Server error." });
     }
 
-    return res.status(201).json({ message: "Item added successfully!", itemId: result.insertId });
+    // Fetch the newly inserted item
+    const fetchSql = 'SELECT * FROM items WHERE id = ?';
+    db.query(fetchSql, [result.insertId], (fetchErr, fetchResult) => {
+      if (fetchErr) {
+        console.error("Error fetching new item:", fetchErr);
+        return res.status(500).json({ message: "Server error." });
+      }
+
+      return res.status(201).json({ message: "Item added successfully!", item: fetchResult[0] });
+    });
   });
+};
+
+exports.getAllItems = async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM items');
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    res.status(500).json({ error: 'Failed to fetch items' });
+  }
 };

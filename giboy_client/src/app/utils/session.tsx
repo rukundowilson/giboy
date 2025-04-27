@@ -7,14 +7,14 @@ interface DecodedToken {
 }
 
 export function isUserLoggedIn(): boolean {
-  const token = localStorage.getItem('token');
-  
-  if (!token) {
+  const token = localStorage?.getItem('token');
+  const userData = localStorage?.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : { email: '' };  
+  if (!token && !userData){
     return false; 
   }
 
   try {
-    const decoded = jwtDecode<DecodedToken>(token);
+    const decoded = jwtDecode<DecodedToken>(token!);
     const currentTime = Date.now() / 1000;
 
     if (decoded.exp < currentTime) {

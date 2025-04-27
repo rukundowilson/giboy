@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { isUserLoggedIn } from '../utils/session';
+import API from '../utils/axios';
 
 
 // Types
@@ -16,7 +17,7 @@ interface Product {
   name: string;
   price: number;
   description: string;
-  imageUrl: string;
+  image_url: string;
   stockStatus: 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
   category: string;
 }
@@ -27,70 +28,16 @@ interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  imageUrl: string;
+  image_url: string
 }
 interface User{
   email : string
 }
 
 // Mock data
-const mockProducts: Product[] = [
-  {
-    id: '1',
-    name: 'Wireless Headphones',
-    price: 129.99,
-    description: 'High-quality wireless headphones with noise cancellation',
-    imageUrl: '/images/headphones.jpg',
-    stockStatus: 'IN_STOCK',
-    category: 'Electronics'
-  },
-  {
-    id: '2',
-    name: 'Smart Watch',
-    price: 199.99,
-    description: 'Advanced smartwatch with health tracking features',
-    imageUrl: '/images/smartwatch.jpg',
-    stockStatus: 'IN_STOCK',
-    category: 'Electronics'
-  },
-  {
-    id: '3',
-    name: 'Running Shoes',
-    price: 89.99,
-    description: 'Comfortable running shoes for all terrains',
-    imageUrl: '/images/shoes.jpg',
-    stockStatus: 'LOW_STOCK',
-    category: 'Sports'
-  },
-  {
-    id: '4',
-    name: 'Coffee Maker',
-    price: 59.99,
-    description: 'Programmable coffee maker for home use',
-    imageUrl: '/images/coffeemaker.jpg',
-    stockStatus: 'IN_STOCK',
-    category: 'Home & Kitchen'
-  }
-];
+const mockProducts: Product[] = [];
 
-const mockCartItems: CartItem[] = [
-  {
-    id: 'cart1',
-    productId: '1',
-    name: 'Wireless Headphones',
-    price: 129.99,
-    quantity: 1,
-    imageUrl: '/images/headphones.jpg'
-  },
-  {
-    id: 'cart2',
-    productId: '3',
-    name: 'Running Shoes',
-    price: 89.99,
-    quantity: 1,
-    imageUrl: '/images/shoes.jpg'
-  }
-];
+const mockCartItems: CartItem[] = [];  
 
 const Dashboard: NextPage = () => {
   const router = useRouter();
@@ -100,6 +47,8 @@ const Dashboard: NextPage = () => {
   const [activeTab, setActiveTab] = useState<string>('inStock');
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [error,setError] = useState<string>("")
+  const [loading,setLoading] = useState<boolean>(false)
 
   // Check if user is authenticated and set user data
   useEffect(() => {
@@ -108,7 +57,35 @@ const Dashboard: NextPage = () => {
     }
     const userData = localStorage?.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : { email: '' };
     setUser(userData);
+    fetchProducts()
   }, []);
+
+  const handleLogout = () => {
+    // Remove both token and user
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  
+    // Optionally, you can clear everything if you want:
+    // localStorage.clear();
+  
+    // Redirect to login page
+    router.push('/login');
+  };
+  const fetchProducts = async () => {  
+    try {
+      const response = await API.get<Product[]>("/api/items");
+      const dataReceived = response.data;
+      
+      setProducts(dataReceived); // no need for mockProducts variable
+      console.log(dataReceived);
+    } catch (err) {
+      console.error("Error fetching items:", err);
+      setError('Failed to fetch products');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   // Filter products based on active filter and search query
   const filteredProducts = products.filter(product => {
     const matchesFilter = activeFilter === 'All' || product.category === activeFilter;
@@ -134,12 +111,29 @@ const Dashboard: NextPage = () => {
         name: product.name,
         price: product.price,
         quantity: 1,
-        imageUrl: product.imageUrl
+        image_url: product.image_url
       };
       setCartItems([...cartItems, newItem]);
     }
   };
 
+  const saveCartItem = async (item: CartItem) => {
+    try {
+      const userId = 1; // get real user ID from session
+  
+      await API.post('/api/cart-items', {
+        user_id: userId,
+        item_id: item.productId,
+        quantity: item.quantity,
+      });
+  
+      console.log('Cart item saved to database');
+    } catch (err) {
+      console.error('Failed to save cart item:', err);
+    }
+  };
+  
+  
   // Remove item from cart
   const removeFromCart = (itemId: string) => {
     setCartItems(cartItems.filter(item => item.id !== itemId));
@@ -155,14 +149,14 @@ const Dashboard: NextPage = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Head>
-        <title>Dashboard | ShopEase</title>
-        <meta name="description" content="User dashboard for ShopEase" />
+        <title>Dashboard | giboy store </title>
+        <meta name="description" content="User dashboard for giboy" />
       </Head>
 
       {/* Header */}
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/dashboard">
+          <Link href="/">
             <span className="text-xl font-bold cursor-pointer">Giboy store</span>
           </Link>
           
@@ -181,7 +175,15 @@ const Dashboard: NextPage = () => {
             <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
               {user?.email?.charAt(0) || 'U'}
             </div>
+            <button 
+              className="px-4 py-2 rounded-md text-white"
+              style={{ backgroundColor: '#e53e3e' }}
+              onClick={() => {handleLogout()}}
+            >
+              Logout
+            </button>
           </div>
+          
         </div>
       </header>
 
@@ -263,12 +265,16 @@ const Dashboard: NextPage = () => {
                     <div className="h-40 bg-gray-100 relative">
                       {/* In a real app, you would use proper image loading */}
                       <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        [Product Image]
+                      <img
+                        src={`http://localhost:8000/uploads/${product.image_url}`}
+                        alt={product.name}
+                        className="h-full w-full object-cover"
+                      />
                       </div>
                     </div>
                     <div className="p-4">
                       <h3 className="font-medium mb-1">{product.name}</h3>
-                      <p className="text-gray-800 font-bold mb-2">${product.price.toFixed(2)}</p>
+                      <p className="text-gray-800 font-bold mb-2">${product?.price}</p>
                       <div className={`inline-block px-2 py-1 rounded text-xs mb-2 ${
                         product.stockStatus === 'IN_STOCK' 
                           ? 'bg-green-100 text-green-800' 
@@ -314,12 +320,16 @@ const Dashboard: NextPage = () => {
                     {cartItems.map((item) => (
                       <div key={item.id} className="flex items-center border-b pb-4">
                         <div className="w-12 h-12 bg-gray-100 mr-3 flex-shrink-0 flex items-center justify-center text-xs text-gray-400">
-                          [IMG]
+                        <img
+                        src={`http://localhost:8000/uploads/${item.image_url}`}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                      />
                         </div>
                         <div className="flex-grow">
                           <h3 className="font-medium text-sm">{item.name}</h3>
                           <div className="flex justify-between items-center mt-1">
-                            <span className="text-gray-600 text-sm">${item.price.toFixed(2)} x {item.quantity}</span>
+                            <span className="text-gray-600 text-sm">${item.price} x {item.quantity}</span>
                             <button 
                               className="text-red-500 hover:text-red-700"
                               onClick={() => removeFromCart(item.id)}
@@ -337,7 +347,7 @@ const Dashboard: NextPage = () => {
                   <div className="mt-4 pt-4">
                     <div className="flex justify-between font-bold">
                       <span>Total:</span>
-                      <span>${cartTotal.toFixed(2)}</span>
+                      <span>${cartTotal}</span>
                     </div>
                     <button className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded mt-4 transition-colors duration-300">
                       Proceed to Checkout
@@ -358,7 +368,7 @@ const Dashboard: NextPage = () => {
                     </div>
                     <div>
                       <h3 className="text-sm font-medium">{product.name}</h3>
-                      <p className="text-xs text-gray-500">${product.price.toFixed(2)}</p>
+                      <p className="text-xs text-gray-500">${product.price}</p>
                     </div>
                   </div>
                 ))}

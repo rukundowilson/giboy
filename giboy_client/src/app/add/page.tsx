@@ -106,10 +106,8 @@ const AdminProductsPage: React.FC = () => {
         throw new Error('No data returned');
       }
   
-      // Only after successful POST ➔ now fetch products
       await fetchProducts();
   
-      // After fetching products ➔ reset the form
       resetForm();
     } catch (err) {
       console.error('Error submitting product:', err);
@@ -166,8 +164,6 @@ const AdminProductsPage: React.FC = () => {
       }
     }
   };
-
-  // Fetch products on component mount
 
   useEffect(() => {
     fetchProducts();
@@ -397,7 +393,7 @@ const AdminProductsPage: React.FC = () => {
                         className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                         style={{ backgroundColor: '#e53e3e' }}
                       >
-                        {/* {isSubmitting ? 'Saving...' : isEditing ? 'Update Product' : 'Add Product'} */} add
+                        {isSubmitting ? 'Saving...' : isEditing ? 'Update Product' : 'Add Product'}
                       </button>
                     </div>
                   </div>

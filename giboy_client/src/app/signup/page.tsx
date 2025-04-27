@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import styles from "./page.module.css"
 import API from '../utils/axios';
+import Toast from '../components/toast';
 
 interface SignupFormData {
   firstName: string;

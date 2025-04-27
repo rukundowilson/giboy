@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "axios": "^1.9.0",
+    "flowbite": "^3.1.2",
+    "flowbite-react": "^0.11.7",
+    "jwt-decode": "^4.0.0",
     "next": "15.3.1",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.5.1"

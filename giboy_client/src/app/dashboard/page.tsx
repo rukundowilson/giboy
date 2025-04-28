@@ -31,7 +31,8 @@ interface CartItem {
   image_url: string
 }
 interface User{
-  email : string
+  email : string,
+  id: number
 }
 
 // Mock data
@@ -41,7 +42,7 @@ const mockCartItems: CartItem[] = [];
 
 const Dashboard: NextPage = () => {
   const router = useRouter();
-  const [user,setUser] = useState<User>({ email: '' })
+  const [user,setUser] = useState<User>({ email: '', id: 0 })
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [cartItems, setCartItems] = useState<CartItem[]>(mockCartItems);
   const [activeTab, setActiveTab] = useState<string>('inStock');
@@ -51,13 +52,17 @@ const Dashboard: NextPage = () => {
   const [loading,setLoading] = useState<boolean>(false)
 
   // Check if user is authenticated and set user data
+  console.log(user)
   useEffect(() => {
     if (!isUserLoggedIn){
       router.push('/login')
     }
     const userData = localStorage?.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : { email: '' };
     setUser(userData);
-    fetchProducts()
+    fetchProducts();
+    if (userData.id) {
+      fetchUserCartItems(userData.id);
+    }
   }, []);
 
   const handleLogout = () => {
@@ -119,7 +124,7 @@ const Dashboard: NextPage = () => {
 
   const saveCartItem = async (item: CartItem) => {
     try {
-      const userId = 1; // get real user ID from session
+      const userId = user?.id;
   
       await API.post('/api/cart-items', {
         user_id: userId,
@@ -128,8 +133,24 @@ const Dashboard: NextPage = () => {
       });
   
       console.log('Cart item saved to database');
+      fetchUserCartItems(userId);
+
     } catch (err) {
       console.error('Failed to save cart item:', err);
+    }
+  };
+
+  const fetchUserCartItems = async (userId: number | string) => {
+    try {
+      console.log(userId)
+      const response = await API.get(`/api/get-cart-items/${userId}`);
+      if (response?.data){
+        setCartItems(response.data)
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch cart items:', error);
+      throw error;
     }
   };
   
@@ -141,10 +162,6 @@ const Dashboard: NextPage = () => {
 
   // Calculate cart total
   const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-
-  if (status === 'loading' || status === 'unauthenticated') {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -284,7 +301,18 @@ const Dashboard: NextPage = () => {
                       </div>
                       <button 
                         className="w-full bg-red-400 hover:bg-blue-600 text-white py-2 rounded mt-2 transition-colors duration-300"
-                        onClick={() => addToCart(product)}
+                        onClick={() => {
+                          addToCart(product);
+                          const cartItem = {
+                            id: `cart${cartItems.length + 1}`,
+                            productId: product.id,
+                            name: product.name,
+                            price: product.price,
+                            quantity: 1,
+                            image_url: product.image_url
+                          };
+                          saveCartItem(cartItem);
+                        }}
                       >
                         Add to Cart
                       </button>

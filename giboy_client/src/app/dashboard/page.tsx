@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { isUserLoggedIn } from '../utils/session';
 import API from '../utils/axios';
+import CheckoutModal from '../components/checkout';
 
 
 // Types
@@ -50,6 +51,10 @@ const Dashboard: NextPage = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [error,setError] = useState<string>("")
   const [loading,setLoading] = useState<boolean>(false)
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
+  const [paymentCode, setPaymentCode] = useState("")
+  const [contactInfo, setContactInfo] = useState({ email: "", phone: "" })
+
 
   // Check if user is authenticated and set user data
   console.log(user)
@@ -162,6 +167,7 @@ const Dashboard: NextPage = () => {
 
   // Calculate cart total
   const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -300,7 +306,7 @@ const Dashboard: NextPage = () => {
                         {product.stockStatus === 'IN_STOCK' ? 'In Stock' : 'Low Stock'}
                       </div>
                       <button 
-                        className="w-full bg-red-400 hover:bg-blue-600 text-white py-2 rounded mt-2 transition-colors duration-300"
+                        className="w-full bg-red-400 hover:bg-red-600 text-white py-2 rounded mt-2 transition-colors duration-300"
                         onClick={() => {
                           addToCart(product);
                           const cartItem = {
@@ -345,29 +351,29 @@ const Dashboard: NextPage = () => {
               ) : (
                 <>
                   <div className="space-y-4">
-                    {cartItems.map((item) => (
-                      <div key={item.id} className="flex items-center border-b pb-4">
-                        <div className="w-12 h-12 bg-gray-100 mr-3 flex-shrink-0 flex items-center justify-center text-xs text-gray-400">
-                        <img
-                        src={`http://localhost:8000/uploads/${item.image_url}`}
-                        alt={item.name}
-                        className="h-full w-full object-cover"
+                    {cartItems.map((item, index) => (
+                      <div key={item.id || `cart-${index}`} className="flex items-center border-b pb-4">
+                      <div className="w-12 h-12 bg-gray-100 mr-3 flex-shrink-0 flex items-center justify-center text-xs text-gray-400">
+                      <img
+                      src={`http://localhost:8000/uploads/${item.image_url}`}
+                      alt={item.name}
+                      className="h-full w-full object-cover"
                       />
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className="font-medium text-sm">{item.name}</h3>
+                        <div className="flex justify-between items-center mt-1">
+                        <span className="text-gray-600 text-sm">${item.price} x {item.quantity}</span>
+                        <button 
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => removeFromCart(item.id || `cart-${index}`)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m6-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
                         </div>
-                        <div className="flex-grow">
-                          <h3 className="font-medium text-sm">{item.name}</h3>
-                          <div className="flex justify-between items-center mt-1">
-                            <span className="text-gray-600 text-sm">${item.price} x {item.quantity}</span>
-                            <button 
-                              className="text-red-500 hover:text-red-700"
-                              onClick={() => removeFromCart(item.id)}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m6-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
+                      </div>
                       </div>
                     ))}
                   </div>
@@ -377,7 +383,9 @@ const Dashboard: NextPage = () => {
                       <span>Total:</span>
                       <span>${cartTotal}</span>
                     </div>
-                    <button className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded mt-4 transition-colors duration-300">
+                    <button
+                    onClick={()=>setIsCheckoutOpen(true)}
+                     className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded mt-4 transition-colors duration-300">
                       Proceed to Checkout
                     </button>
                   </div>
@@ -387,7 +395,7 @@ const Dashboard: NextPage = () => {
 
             {/* Recently viewed */}
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="font-bold text-lg mb-4">Recently Viewed</h2>
+              <h2 className="font-bold text-lg mb-4">waiting for review cart</h2>
               <div className="space-y-3">
                 {products.slice(0, 3).map((product) => (
                   <div key={`recent-${product.id}`} className="flex items-center">
@@ -405,6 +413,14 @@ const Dashboard: NextPage = () => {
           </div>
         </div>
       </div>
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={()=>setIsCheckoutOpen(false)}
+        totalAmount={cartTotal}
+        paymentCode={468161}
+        // contactInfo={contactInfo}
+      />
+       
     </div>
   );
 };

@@ -48,7 +48,7 @@ exports.addItem = (req, res) => {
 
 exports.getAllItems = async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM items');
+    const [rows] = await db.query('SELECT * FROM items ORDER BY items.created_at DESC');
     res.status(200).json(rows);
   } catch (error) {
     console.error('Error fetching items:', error);

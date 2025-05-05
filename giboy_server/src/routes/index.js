@@ -17,4 +17,7 @@ router.post('/api/cart-items', cartItemsController.addOrUpdateCartItem);
 router.get('/api/get-cart-items/:userId', cartItemsController.getUserCartItems);
 router.delete('/:id', cartItemsController.deleteCartItem);
 
+// Home route
+router.get('/', homeController.home);
+
 module.exports = router;

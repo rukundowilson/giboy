@@ -10,6 +10,10 @@ app.use(express.json());
 const cors = require('cors');
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
+
+
+app.use(express.json());
+
 app.use("/", routes);
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

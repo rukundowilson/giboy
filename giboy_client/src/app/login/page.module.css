@@ -19,13 +19,13 @@
   .authTitle {
     font-size: 28px;
     font-weight: 700;
-    color: #b3afaf;
+    color: #5f5e5e;
     margin-bottom: 12px;
   }
   
   .authSubtitle {
     font-size: 16px;
-    color: #979797;
+    color: #5a5959;
     margin-bottom: 32px;
   }
   
@@ -45,7 +45,7 @@
   .formLabel {
     font-size: 14px;
     font-weight: 500;
-    color: #ccc9c9;
+    color: #161616;
   }
   
   .formInput {

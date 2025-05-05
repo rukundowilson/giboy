@@ -6,7 +6,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
-
+import API from '../utils/axios';
+import Toast from '../components/toast';
+import { isUserLoggedIn } from '../utils/session';
+import { Route } from 'react-router-dom';
 interface LoginFormData {
   email: string;
   password: string;
@@ -22,40 +25,50 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [rememberMe, setRememberMe] = useState<boolean>(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+  }, []);
+
+  if (isUserLoggedIn()){
+    router.push("/dashboard")
+  }
+
+  const loginUser = async (email: string, password: string) => {
+    const response = await API.post("/api/login", { email, password });
+    return response.data;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = React.useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    
+    if (!formData.email || !formData.password) {
+      setError('Please enter both email and password');
+      setLoading(false);
+      return;
+    }
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      if (formData.email && formData.password) {
-        router.push('/');
-      } else {
-        throw new Error('Please enter both email and password');
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+      const { user, token } = await loginUser(formData.email, formData.password);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);      
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setError(error.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    console.log(`Logging in with ${provider}`);
-  };
+  }, [formData, router]);
 
   return (
     <div className={styles.authContainer}>
+      <Toast message='please login to access all features'/>
       <div className={styles.authCard}>
         <div className={styles.logoContainer}>
           <Image 
@@ -131,12 +144,11 @@ const Login: React.FC = () => {
         </div>        
         <p className={styles.switchAuth}>
           Don't have an account?{' '}
-          <Link href="/register" className={styles.authLink}>
+          <Link href="/signup" className={styles.authLink}>
             Sign up
           </Link>
         </p>
       </div>
-      
       <div className={styles.authImageContainer}>
         <Image
           src="/images/pic1.jpeg"

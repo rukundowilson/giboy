@@ -20,4 +20,7 @@ router.delete('/:id', cartItemsController.deleteCartItem);
 router.get('/api/ordered-items', getAllOrderedItems);
 
 
+// Home route
+router.get('/', homeController.home);
+
 module.exports = router;

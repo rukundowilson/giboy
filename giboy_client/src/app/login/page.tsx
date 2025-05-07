@@ -138,6 +138,15 @@ const Login: React.FC = () => {
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
+          <button 
+            onClick={()=>{
+              window.location.href = "/home"
+            }} 
+            className={`${styles.authButton} ${loading ? styles.loading : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'canceling...' : 'cancel'}
+          </button>
         </form>
         
         <div className={styles.divider}>

@@ -103,7 +103,6 @@
     cursor: pointer;
     transition: background-color 0.3s;
   }
-  
   .authButton:hover {
     background-color: #ff5252;
   }

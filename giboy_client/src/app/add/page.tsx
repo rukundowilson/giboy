@@ -189,19 +189,13 @@ const AdminProductsPage: React.FC = () => {
                 <li>
                   <button 
                     className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push('/orders')}
                   >
-                    View Store
+                    View orders
                   </button>
                 </li>
                 <li>
-                  <button 
-                    className="px-4 py-2 rounded-md text-white"
-                    style={{ backgroundColor: '#e53e3e' }}
-                    onClick={() => {/* Handle logout */}}
-                  >
-                    Logout
-                  </button>
+
                 </li>
               </ul>
             </nav>

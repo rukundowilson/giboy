@@ -4,6 +4,7 @@ const homeController = require('../controllers/homeController');
 const userController = require('../controllers/userController');
 const { upload, addItem, getAllItems } = require("../controllers/itemController");
 const cartItemsController = require('../controllers/cartItemsController');
+const { getAllOrderedItems } = require('../controllers/orderController');
 
 
 // Home route
@@ -16,5 +17,7 @@ router.get("/api/items", getAllItems);
 router.post('/api/cart-items', cartItemsController.addOrUpdateCartItem);
 router.get('/api/get-cart-items/:userId', cartItemsController.getUserCartItems);
 router.delete('/:id', cartItemsController.deleteCartItem);
+router.get('/api/ordered-items', getAllOrderedItems);
+
 
 module.exports = router;

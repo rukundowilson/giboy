@@ -39,7 +39,7 @@ const Category: React.FC<CategoryProps> = ({ title, image, link }) => {
         />
       </div>
       <h3>{title}</h3>
-      <Link href={link} className={styles.categoryLink}>
+      <Link href={"/login"} className={styles.categoryLink}>
          Shop Now
       </Link>
     </div>
@@ -78,7 +78,9 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, discount }) =
           <span className={styles.price}>${price.toFixed(2)}</span>
         )}
       </div>
-      <button className={styles.addToCartButton}>Add to Cart</button>
+      <button onClick={()=>{
+        window.location.href="login"
+      }} className={styles.addToCartButton}>Add to Cart</button>
     </div>
   );
 };
@@ -177,10 +179,10 @@ export default function MainPage(){
             <h1>Adorable Clothes for Your Little Ones</h1>
             <p>Premium quality, comfortable, and stylish baby clothing that grows with your child</p>
             <div className={styles.heroButtons}>
-              <Link href="/shop" className={styles.primaryButton}>
+              <Link href="/login" className={styles.primaryButton}>
                 Shop Now
               </Link>
-              <Link href="/collections/new" className={styles.secondaryButton}>
+              <Link href="/login" className={styles.secondaryButton}>
                 View New Arrivals
               </Link>
 
@@ -237,7 +239,7 @@ export default function MainPage(){
             ))}
           </div>
           <div className={styles.viewAllContainer}>
-            <Link href="/shop" className={styles.viewAllButton}>
+            <Link href="/login" className={styles.viewAllButton}>
               View All Products
             </Link>
 
